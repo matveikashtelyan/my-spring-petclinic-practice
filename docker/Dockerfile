@@ -16,7 +16,7 @@ RUN ./gradlew dependencies --refresh-dependencies
 
 COPY src ./src
 
-RUN ./gradlew build -x test
+RUN ./gradlew build
 
 FROM alpine:3.22.2 AS runtime
 
