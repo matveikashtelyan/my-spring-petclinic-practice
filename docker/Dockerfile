@@ -1,9 +1,17 @@
-FROM alpine:3.22.2 AS build
+ARG ALPINE_PACKAGE_BRANCH_REPO='edge/community'
+ARG ALPINE_TAG='3.22.2'
+ARG JAVA_VERSION='25'
+
+
+FROM alpine:${ALPINE_TAG} AS build
+
+ARG ALPINE_PACKAGE_BRANCH_REPO
+ARG JAVA_VERSION
 
 RUN apk update && \
-    apk add openjdk25-jdk \
+    apk add openjdk${JAVA_VERSION}-jdk \
         --no-cache \
-        --repository=https://dl-cdn.alpinelinux.org/edge/community/
+        --repository=https://dl-cdn.alpinelinux.org/${ALPINE_PACKAGE_BRANCH_REPO}
 
 WORKDIR /build
 
@@ -19,12 +27,15 @@ COPY src ./src
 RUN ./gradlew build
 
 
-FROM alpine:3.22.2 AS runtime
+FROM alpine:${ALPINE_TAG} AS runtime
+
+ARG ALPINE_PACKAGE_BRANCH_REPO
+ARG JAVA_VERSION
 
 RUN apk update && \
-    apk add openjdk25-jre \
+    apk add openjdk${JAVA_VERSION}-jre \
         --no-cache \
-        --repository=https://dl-cdn.alpinelinux.org/edge/community/
+        --repository=https://dl-cdn.alpinelinux.org/${ALPINE_PACKAGE_BRANCH_REPO}
 
 WORKDIR /app
 
